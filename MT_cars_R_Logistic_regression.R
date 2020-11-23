@@ -1,0 +1,18 @@
+data('mtcars')
+mtc<-mtcars
+head(mtc)
+library(caTools)
+set.seed(123)
+str(mtc)
+mtc$vs<-factor(mtc$vs)
+split<-sample.split(mtc$vs,SplitRatio = 0.75)
+train<-subset(mtc,split==T)
+test<-subset(mtc,split==F)
+mt_reg<-glm(vs~.,data=train,family="binomial")
+mt_pred<-predict(mt_reg,newdata = test,type = "response")
+mt_pred<-ifelse(mt_pred>=0.5,1,0)
+mt_pred
+cm<-table(test$vs,mt_pred)
+library(caret)
+library(e1071)
+confusionMatrix(cm)

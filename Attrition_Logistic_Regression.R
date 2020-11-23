@@ -1,0 +1,17 @@
+att<-read.csv(choose.files(),header = T)
+head(att)
+att<-att[,-c(9:11)]
+str(att)
+library(caTools)
+set.seed(123)
+split<-sample.split(att$left,SplitRatio = 0.75)
+training<-subset(att,split==T)
+testing<-subset(att,split==F)
+att_reg<-glm(left~.,data=training,family = binomial)
+att_pred<-predict(att_reg,newdata=testing,type="response")
+att_pred<-ifelse(att_pred>=0.5,1,0)
+cm<-table(testing$left,att_pred)
+library(caret)
+library(e1071)
+confusionMatrix(cm)
+cm
